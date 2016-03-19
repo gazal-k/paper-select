@@ -4,11 +4,7 @@ Polymer({
 
   is: 'paper-select',
 
-  behaviors: [
-    Polymer.IronFormElementBehavior,
-    Polymer.PaperInputBehavior,
-    Polymer.IronControlState,
-  ],
+  behaviors: [Polymer.IronFormElementBehavior, Polymer.PaperInputBehavior, Polymer.IronControlState],
 
   hostAttributes: {
     role: 'button'
@@ -20,7 +16,7 @@ Polymer({
 
     _input: {
       type: Object,
-      value: function () {
+      value: function() {
         return this.$.input;
       },
     },
@@ -30,7 +26,7 @@ Polymer({
      */
     options: {
       type: Array,
-      value: function () {
+      value: function() {
         return [];
       },
     },
@@ -41,8 +37,7 @@ Polymer({
     input: {
       type: String,
       value: '',
-      notify
-: true,
+      notify: true,
       observer: '_inputChanged',
     },
 
@@ -56,7 +51,7 @@ Polymer({
     },
 
     /**
-     * Multuple selection mode, tags-like 
+     * Multuple selection mode, tags-like
      */
     multiple: {
       type: Boolean,
@@ -132,9 +127,7 @@ Polymer({
 
   },
 
-  observers: [
-    '_valueChanged(bindValue.*)'
-  ],
+  observers: ['_valueChanged(bindValue.*)'],
 
   listeners: {
     // 'blur': '_onBlur',
@@ -144,14 +137,14 @@ Polymer({
 
   // Element Lifecycle
 
-  created: function () {
+  created: function() {
     this.toggleClass('paper-input-input', true);
   },
 
-  ready: function () {
+  ready: function() {
 
     var self = this;
-    this.$.input.validate = function (value) {
+    this.$.input.validate = function() {
       return !self.required || !!self.bindValue;
     };
 
@@ -160,23 +153,23 @@ Polymer({
     // _template = Polymer.dom(this).querySelector('template[selected-item]');
     // console.log(_template, this.root)
     // if (_template) {
-    //   var t = document.createElement('template');
-    //   t.id = 'paper-select-selected-item-template';
-    //   t.innerHTML = _template.innerHTML;
-    //   Polymer.dom(this.root).replaceChild(t, this.$['paper-select-selected-item-template']);
+    // var t = document.createElement('template');
+    // t.id = 'paper-select-selected-item-template';
+    // t.innerHTML = _template.innerHTML;
+    // Polymer.dom(this.root).replaceChild(t, this.$['paper-select-selected-item-template']);
     // }
 
     // _template = this.querySelector('template[option-item]');
     // if (_template) {
-    //   var t = document.createElement('template');
-    //   t.id = 'paper-select-option-item-template';
-    //   t.innerHTML = _template.innerHTML;
-    //   Polymer.dom(this).replaceChild(t, this.$['paper-select-option-item-template']);
+    // var t = document.createElement('template');
+    // t.id = 'paper-select-option-item-template';
+    // t.innerHTML = _template.innerHTML;
+    // Polymer.dom(this).replaceChild(t, this.$['paper-select-option-item-template']);
     // }
 
   },
 
-  attached: function () {
+  attached: function() {
     this.options = this.options || null;
     this.set('bindValue', this.bindValue || this.value || this._defaultValue);
     this.input = this.input || '';
@@ -184,33 +177,34 @@ Polymer({
 
   // Element Behavior
 
-  _inputChanged: function () {
-    // console.log('_inputChanged', arguments);    this._fixLabelState();
+  _inputChanged: function() {
+    // console.log('_inputChanged', arguments); this._fixLabelState();
   },
 
-  _valueChanged: function () {
+  _valueChanged: function() {
     // console.log('_valueChanged', this, arguments);
-    if (this.multiple)
+    if (this.multiple) {
       this.value = this.bindValue ? this.bindValue.map(this._formValueOf.bind(this)).join(',') : '';
-    else
+    } else {
       this.value = this.bindValue ? this._formValueOf(this.bindValue) : '';
+    }
     this.$.inputContainer._handleValue(this.$.input);
     this._fixLabelState();
   },
 
-  _computeShowInput: function (multiple, bindValue) {
+  _computeShowInput: function(multiple, bindValue) {
     return multiple || !bindValue;
   },
 
-  _computeShowOptions: function (options, _showAddAction) {
+  _computeShowOptions: function(options, _showAddAction) {
     return options && options.length || _showAddAction;
   },
 
-  _computeShowAddAction: function (nonmatching, input) {
+  _computeShowAddAction: function(nonmatching, input) {
     return nonmatching && input.trim();
   },
 
-  _wrap: function (item) {
+  _wrap: function(item) {
     return {
       item: item
     };
@@ -219,7 +213,7 @@ Polymer({
   /**
    * Resets component.
    */
-  reset: function () {
+  reset: function() {
     this.set('bindValue', this._defaultValue);
     this.clear();
   },
@@ -227,7 +221,7 @@ Polymer({
   /**
    * Resets component's input.
    */
-  clear: function () {
+  clear: function() {
     this.input = '';
     this.options = null;
     this.$.optionsMenu.selected = null;
@@ -235,56 +229,53 @@ Polymer({
 
   /**
    * Prepares select/option item's display.
-   *
+   * 
    * @param {object} Select item data.
    * @return {string} Label.
    */
-  _labelOf: function (obj) {
+  _labelOf: function(obj) {
     // console.log('_labelOf', this.labelField, this.valueField, obj)
-    if (this.labelField === null && this.valueField === null)
-      return obj || '';
+    if (this.labelField === null && this.valueField === null) { return obj || ''; }
     return typeof obj === 'object' && obj ? obj[this.labelField || this.valueField] : obj || '';
   },
 
-  _valueOf: function (obj) {
+  _valueOf: function(obj) {
     // console.log('_valueOf', this.labelField, this.valueField, obj)
-    if (this.valueField === null)
-      return obj || '';
+    if (this.valueField === null) { return obj || ''; }
     return typeof obj === 'object' && obj ? obj[this.valueField] : obj || '';
   },
 
-  _formValueOf: function (obj) {
+  _formValueOf: function(obj) {
     // console.log('_formValueOf', this.labelField, this.valueField, obj)
-    if (this.valueField === null && this.labelField === null)
-      return obj || '';
+    if (this.valueField === null && this.labelField === null) { return obj || ''; }
     return typeof obj === 'object' && obj ? obj[this.valueField || this.labelField] : obj || '';
   },
 
-  _highlight: function (label) {
+  _highlight: function(label) {
     return label.substr(0, this.input.length);
   },
 
-  _highlightAfter: function (label) {
+  _highlightAfter: function(label) {
     return label.substr(this.input.length);
   },
 
-  _focus: function () {
+  _focus: function() {
     this.$.input.focus();
   },
 
-  _fixLabelState: function () {
+  _fixLabelState: function() {
     // console.log('_fixLabelState')
     this.$.inputContainer._inputHasContent = !!this.bindValue || !!this.input;
   },
 
-  _onBlur: function () {
+  _onBlur: function() {
     // if (this.nonmatching && this.input && this.selectOnBlur)
-    //   this._addItem();
+    // this._addItem();
     // if (!this.keepOnBlur)
-    //   this.async(this.clear.bind(this), 100);
+    // this.async(this.clear.bind(this), 100);
   },
 
-  _onKeyDown: function (event, detail) {
+  _onKeyDown: function(event) {
     switch (event.keyCode) {
     case 38: // up arrow
     case 40: // down arrow
@@ -294,30 +285,30 @@ Polymer({
     }
   },
 
-  _cancelEvent: function (event, detail) {
+  _cancelEvent: function(event) {
     event.preventDefault();
     event.stopPropagation();
   },
 
-  _preventDefault: function (event) {
+  _preventDefault: function(event) {
     event.preventDefault();
   },
 
-  _stopPropagation: function (event) {
+  _stopPropagation: function(event) {
     event.stopPropagation();
   },
 
-  _cancelKeyboardEventScroll: function (event, detail) {
+  _cancelKeyboardEventScroll: function(event, detail) {
     detail.keyboardEvent.preventDefault();
 
     // detail.keyboardEvent.stopPropagation();
   },
 
-  _elementTapped: function (event, detail) {
+  _elementTapped: function() {
     this._focus();
   },
 
-  _removeSelectedItemTapped: function (event, detail) {
+  _removeSelectedItemTapped: function(event) {
     if (this.multiple) {
       // var value = Polymer.dom(event).rootTarget.parentElement.value;
       var index = this.bindValue.indexOf(event.model.item);
@@ -333,7 +324,7 @@ Polymer({
     this.async(this._focus.bind(this));
   },
 
-  _onInputKeyDown: function (event, detail) {
+  _onInputKeyDown: function(event) {
     switch (event.keyCode) {
     case 188: // comma
       if (this.nonmatching && this.input.trim()) {
@@ -344,7 +335,7 @@ Polymer({
     }
   },
 
-  _onInputKeyÛp: function (event, detail) {
+  _onInputKeyÛp: function(event) {
     // console.log('_onInputKeyÛp', event, event.keyCode);
     switch (event.keyCode) {
     case 8: // backspace
@@ -361,57 +352,56 @@ Polymer({
 
       break;
 
-      // case 27: // escape
-      //   this.clear();
-      //   break;
-      // case 40: // down arrow
-      //   this.$.optionsMenu.focus();
-      //   this.$.optionsMenu.selected = 0;
-      //   break;
+    // case 27: // escape
+    // this.clear();
+    // break;
+    // case 40: // down arrow
+    // this.$.optionsMenu.focus();
+    // this.$.optionsMenu.selected = 0;
+    // break;
     }
   },
 
   // _removeSelectedItemPressed: function(event, detail) {
-  //   if (this.multiple && this.input.length === 0 && this.bindValue && this.bindValue.length > 0) {
-  //     this.pop('bindValue');
-  //   }
+  // if (this.multiple && this.input.length === 0 && this.bindValue && this.bindValue.length > 0) {
+  // this.pop('bindValue');
+  // }
   // },
 
   // _addItemPressed: function(event, detail) {
-  //   if (this.nonmatching && this.input.trim()) {
-  //     detail.keyboardEvent.preventDefault();
-  //     this._addItem();
-  //   }
+  // if (this.nonmatching && this.input.trim()) {
+  // detail.keyboardEvent.preventDefault();
+  // this._addItem();
+  // }
   // },
 
-  _focusOnOptionsPressed: function (event, detail) {
+  _focusOnOptionsPressed: function() {
     this.$.optionsMenu.focus();
   },
 
-  _optionItemTapped: function (event, detail) {
+  _optionItemTapped: function(event) {
     this.selectItem(event.model.item);
   },
 
-  _optionItemKeyUp: function (event, detail) {
+  _optionItemKeyUp: function(event) {
     if (event.keyCode === 13) { // enter
       this.selectItem(event.model.item);
     }
   },
 
-  _addItem: function () {
+  _addItem: function() {
     var input = this.input.trim();
-    if (!input)
-      return;
+    if (!input) { return; }
     var detail = {
       value: input
     };
     this.fire('adding-item', detail);
-    this.async(function () {
+    this.async(function() {
       this.selectItem(detail.value);
     });
   },
 
-  _addItemOnEnter: function (event, detail) {
+  _addItemOnEnter: function(event) {
     if (event.keyCode === 13) {
       if (this.nonmatching && this.input.trim()) {
         this._addItem();
@@ -419,25 +409,27 @@ Polymer({
     }
   },
 
-  selectItem: function (item) {
+  selectItem: function(item) {
     if (this.multiple) {
-      if (!this.bindValue)
+      if (!this.bindValue) {
         this.set('bindValue', [item]);
-      else
+      } else {
         this.push('bindValue', item);
+      }
     } else {
       this.set('bindValue', item);
     }
     this.async(this.clear.bind(this));
-    if (this.multiple)
+    if (this.multiple) {
       this.async(this._focus.bind(this));
+    }
   },
 
-  /**
-   * The `adding-item` event is fired whenever an item is added.
-   *
-   * @event adding-item
-   * @detail {{value: String}}
-   */
+/**
+ * The `adding-item` event is fired whenever an item is added.
+ * 
+ * @event adding-item
+ * @detail {{value: String}}
+ */
 
 });
